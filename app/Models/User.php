@@ -36,6 +36,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * 获取当前用户发布的所有微博
+     */
+    public  function feed(){
+        return $this->statuses()
+            ->orderBy('created_at','desc');
+    }
     public  function gravatar($size='100'){
         $hash=md5(strtolower(trim($this->attrbutes['email'])));
         return "http://www.gravatar.com/avatar/$hash?s=$size";
