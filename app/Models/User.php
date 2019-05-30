@@ -42,7 +42,10 @@ class User extends Authenticatable
      * 获取当前用户发布的所有微博
      */
     public  function feed(){
-        return $this->statuses()
+        $user_ids=$this->followings->pluck('id')->toArray();//所有关注用户
+        array_push($user_ids, $this->id);
+        return Status::whereIn('user_id',$user_ids)
+            ->with('user')
             ->orderBy('created_at','desc');
     }
     public  function gravatar($size='100'){
@@ -83,8 +86,9 @@ class User extends Authenticatable
         }
         $this->followings()->detach($user_ids);
     }
-    public  function isFollowing($user_id){
-        return $this->followings()->contains($user_id);
+    public function isFollowing($user_id)
+    {
+        return $this->followings->contains($user_id);
     }
 
 
